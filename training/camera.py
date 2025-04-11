@@ -28,11 +28,11 @@ class UploadThread(Thread):
         while not quit.is_set():
             if not file_queue.empty():
                 file_path = file_queue.get()
-                try:
-                    toilet_training.upload(image_path=file_path)
-                finally:
-                    pass
+                print('upload: '+file_path)
+                toilet_training.upload(image_path=file_path, batch_name='test')
+                time.sleep(1)
                 os.remove(file_path)
+                byte_queue.task_done()
                 file_queue.task_done()
 
 
@@ -73,7 +73,8 @@ while n < 10:
     bytes = io.BytesIO()
     pc.capture_file(name='main', file_output=bytes, format='jpeg', signal_function=capture_complete, wait=False)
     byte_queue.put(bytes)
-    time.sleep(0.33)
+    time.sleep(0.15)
+byte_queue.join()
 file_queue.join()
 quit.set()
 pc.stop_preview()
