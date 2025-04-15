@@ -6,7 +6,7 @@ import roboflow
 import queue as q
 import os
 
-ssh = False
+ssh = True
 
 byte_queue = q.Queue(maxsize=-1)
 file_queue = q.Queue(maxsize=-1)
