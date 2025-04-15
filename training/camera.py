@@ -28,7 +28,7 @@ class UploadThread(Thread):
         while not quit.is_set():
             if not file_queue.empty():
                 file_path = file_queue.get()
-                print('upload: '+file_path)
+                print('uploading: '+file_path)
                 toilet_training.upload(image_path=file_path, batch_name='test')
                 time.sleep(1)
                 os.remove(file_path)
