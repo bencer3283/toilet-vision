@@ -29,8 +29,8 @@ class UploadThread(Thread):
             if not file_queue.empty():
                 file_path = file_queue.get()
                 print('uploading: '+file_path)
-                toilet_training.upload(image_path=file_path, batch_name='test')
-                time.sleep(1)
+                toilet_training.upload(image_path=file_path, batch_name='test', num_retry_uploads=2)
+                time.sleep(0.5)
                 os.remove(file_path)
                 byte_queue.task_done()
                 file_queue.task_done()
@@ -59,8 +59,9 @@ still_config = pc.create_still_configuration(
         'AeMeteringMode': 0, # centre weighted
         'AeConstraintMode': 1, # highlight
         'AeExposureMode': 1, # short
-        'Contrast': 1.85,
-        'Brightness': -0.33
+        'Contrast': 3,
+        'Brightness': -0.67,
+        'Sharpness': 1.5
     })
 pc.configure(still_config)
 pc.start_preview(preview=Preview.QT if ssh else Preview.QTGL)
@@ -71,12 +72,12 @@ upload = UploadThread()
 upload.start()
 
 n = 0
-while n < 5:
+while n < 10:
     n += 1
     bytes = io.BytesIO()
     pc.capture_file(name='main', file_output=bytes, format='jpeg', signal_function=capture_complete, wait=False)
     byte_queue.put(bytes)
-    time.sleep(0.15)
+    time.sleep(0.67)
 byte_queue.join()
 file_queue.join()
 quit.set()
