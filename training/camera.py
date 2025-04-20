@@ -6,7 +6,7 @@ import roboflow
 import queue as q
 import os
 
-ssh = True
+ssh = False
 
 byte_queue = q.Queue(maxsize=-1)
 file_queue = q.Queue(maxsize=-1)
@@ -56,8 +56,11 @@ still_config = pc.create_still_configuration(
     display='lores',
     controls={
         'AwbEnable': True,
-        'AeMeteringMode': 0,
-        'AeConstraintMode': 1
+        'AeMeteringMode': 0, # centre weighted
+        'AeConstraintMode': 1, # highlight
+        'AeExposureMode': 1, # short
+        'Contrast': 1.85,
+        'Brightness': -0.33
     })
 pc.configure(still_config)
 pc.start_preview(preview=Preview.QT if ssh else Preview.QTGL)
@@ -68,7 +71,7 @@ upload = UploadThread()
 upload.start()
 
 n = 0
-while n < 10:
+while n < 5:
     n += 1
     bytes = io.BytesIO()
     pc.capture_file(name='main', file_output=bytes, format='jpeg', signal_function=capture_complete, wait=False)
