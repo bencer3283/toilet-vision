@@ -1,3 +1,9 @@
 keys.txt
 toilet-vision-training/
+toilet-vision-conversion/
 picamera2/
+img/
+*.rf.*
+conversion/dataset/.DS_Store
+conversion/dataset/test/.DS_Store
+.gitignore

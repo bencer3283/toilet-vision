@@ -1,4 +1,5 @@
 from picamera2 import Picamera2, Preview
+from libcamera import controls
 
 ssh = False
 
@@ -14,11 +15,11 @@ still_config = pc.create_still_configuration(
     display='lores',
     controls={
         'AwbEnable': True,
-        'AeMeteringMode': 0, # centre weighted
-        'AeConstraintMode': 1, # highlight
-        'AeExposureMode': 1, # short
-        'Contrast': 3,
-        'Brightness': -0.67,
+        'AeMeteringMode': controls.AeMeteringModeEnum.CentreWeighted, # 0 centre weighted
+        'AeConstraintMode': controls.AeConstraintModeEnum.Highlight, # 1 highlight
+        'AeExposureMode': controls.AeExposureModeEnum.Short, # 1 short
+        'Contrast': 3.2,
+        'ExposureValue': -1.7,
         'Sharpness': 1.5
     })
 pc.configure(still_config)

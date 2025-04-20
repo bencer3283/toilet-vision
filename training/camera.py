@@ -1,4 +1,5 @@
 from picamera2 import Picamera2, Preview
+from libcamera import controls
 from threading import Thread, Event
 import time
 import io
@@ -30,14 +31,13 @@ class UploadThread(Thread):
                 file_path = file_queue.get()
                 print('uploading: '+file_path)
                 toilet_training.upload(image_path=file_path, batch_name='test', num_retry_uploads=2)
-                time.sleep(0.5)
                 os.remove(file_path)
                 byte_queue.task_done()
                 file_queue.task_done()
 
 
 def capture_complete(job):
-    n = hash(job)
+    n = hash(job) + time.clock_gettime_ns(time.CLOCK_MONOTONIC)
     print(n)
     with open(str(n)+'.jpg', mode='wb') as f:
         f.write(byte_queue.get().getbuffer())
@@ -56,11 +56,11 @@ still_config = pc.create_still_configuration(
     display='lores',
     controls={
         'AwbEnable': True,
-        'AeMeteringMode': 0, # centre weighted
-        'AeConstraintMode': 1, # highlight
-        'AeExposureMode': 1, # short
-        'Contrast': 3,
-        'Brightness': -0.67,
+        'AeMeteringMode': controls.AeMeteringModeEnum.CentreWeighted, # 0 centre weighted
+        'AeConstraintMode': controls.AeConstraintModeEnum.Highlight, # 1 highlight
+        'AeExposureMode': controls.AeExposureModeEnum.Short, # 1 short
+        'Contrast': 3.2,
+        'ExposureValue': -1.7,
         'Sharpness': 1.5
     })
 pc.configure(still_config)
@@ -72,12 +72,12 @@ upload = UploadThread()
 upload.start()
 
 n = 0
-while n < 10:
+while n < 30:
     n += 1
     bytes = io.BytesIO()
     pc.capture_file(name='main', file_output=bytes, format='jpeg', signal_function=capture_complete, wait=False)
     byte_queue.put(bytes)
-    time.sleep(0.67)
+    time.sleep(0.33)
 byte_queue.join()
 file_queue.join()
 quit.set()
