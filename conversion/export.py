@@ -7,7 +7,7 @@ model = YOLO('best.pt')
 model.export(format="imx", data='/home/ben/Documents/toilet-vision/conversion/dataset/data.yaml')  # exports with PTQ quantization by default
 
 # Load the exported model
-imx_model = YOLO("yolo8n_imx_model")
+imx_model = YOLO("best_imx_model")
 
 # Run inference
 results = imx_model('img/*.jpg')
