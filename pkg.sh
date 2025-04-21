@@ -1,0 +1,2 @@
+imx500-package -i packerOut.zip -o ./imx500pkg/
+# python imx500_object_detection_demo.py --model ./imx500pkg/network.rpk --fps 20 --bbox-normalization --ignore-dash-labels --bbox-order xy --labels ./imx500pkg/labels.txt --threshold 0.1

@@ -171,25 +171,37 @@ if __name__ == "__main__":
 
     picam2 = Picamera2(imx500.camera_num)
     sensor_mode = picam2.sensor_modes[1]
-    config = picam2.create_preview_configuration(controls={"FrameRate": intrinsics.inference_rate}, buffer_count=12)
+    preview_config = picam2.create_preview_configuration(
+        controls={
+            "FrameRate": intrinsics.inference_rate,
+            'AwbEnable': True,
+            'AeMeteringMode': controls.AeMeteringModeEnum.CentreWeighted, # 0 centre weighted
+            'AeConstraintMode': controls.AeConstraintModeEnum.Highlight, # 1 highlight
+            'AeExposureMode': controls.AeExposureModeEnum.Short, # 1 short
+            'Contrast': 2,
+            'Brightness': -0.7,
+            'Sharpness': 1.5
+            }, 
+        buffer_count=12)
 
     still_config = picam2.create_still_configuration(
-    main={'format': 'BGR888', 'size': (4056, 3040)},
-    sensor={'output_size': sensor_mode['size'], 'bit_depth': sensor_mode['bit_depth']},
-    lores={'size': (1014, 760)},
-    display='lores',
-    controls={
-        'AwbEnable': True,
-        'AeMeteringMode': controls.AeMeteringModeEnum.CentreWeighted, # 0 centre weighted
-        'AeConstraintMode': controls.AeConstraintModeEnum.Highlight, # 1 highlight
-        'AeExposureMode': controls.AeExposureModeEnum.Short, # 1 short
-        'Contrast': 3.2,
-        'ExposureValue': -1.7,
-        'Sharpness': 1.5
-    })
+        main={'format': 'BGR888', 'size': (4056, 3040)},
+        sensor={'output_size': sensor_mode['size'], 'bit_depth': sensor_mode['bit_depth']},
+        lores={'size': (1014, 760)},
+        display='lores',
+        controls={
+            'AwbEnable': True,
+            'AeMeteringMode': controls.AeMeteringModeEnum.CentreWeighted, # 0 centre weighted
+            'AeConstraintMode': controls.AeConstraintModeEnum.Highlight, # 1 highlight
+            'AeExposureMode': controls.AeExposureModeEnum.Short, # 1 short
+            'Contrast': 3.2,
+            'ExposureValue': -1.7,
+            'Sharpness': 1.5
+        }
+    )
 
     imx500.show_network_fw_progress_bar()
-    picam2.start(still_config, show_preview=True)
+    picam2.start(preview_config, show_preview=True)
     # picam2.configure(config)
     # picam2.start_preview(Preview.QTGL)
 

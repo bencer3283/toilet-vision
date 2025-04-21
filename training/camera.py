@@ -63,7 +63,8 @@ still_config = pc.create_still_configuration(
         'Contrast': 3.2,
         'ExposureValue': -1.7,
         'Sharpness': 1.5
-    })
+    }
+)
 pc.configure(still_config)
 pc.start_preview(preview=Preview.QT if ssh else Preview.QTGL)
 pc.start()
@@ -73,7 +74,7 @@ upload = UploadThread()
 upload.start()
 
 n = 0
-while n < 50:
+while n < 15:
     n += 1
     bytes = io.BytesIO()
     pc.capture_file(name='main', file_output=bytes, format='jpeg', signal_function=capture_complete, wait=False)
