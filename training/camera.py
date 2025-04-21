@@ -8,6 +8,7 @@ import queue as q
 import os
 
 ssh = False
+rf_batch_name = 'one-led'
 
 byte_queue = q.Queue(maxsize=-1)
 file_queue = q.Queue(maxsize=-1)
@@ -30,7 +31,7 @@ class UploadThread(Thread):
             if not file_queue.empty():
                 file_path = file_queue.get()
                 print('uploading: '+file_path)
-                toilet_training.upload(image_path=file_path, batch_name='test', num_retry_uploads=2)
+                toilet_training.upload(image_path=file_path, batch_name=rf_batch_name, num_retry_uploads=2)
                 os.remove(file_path)
                 byte_queue.task_done()
                 file_queue.task_done()
@@ -72,7 +73,7 @@ upload = UploadThread()
 upload.start()
 
 n = 0
-while n < 30:
+while n < 50:
     n += 1
     bytes = io.BytesIO()
     pc.capture_file(name='main', file_output=bytes, format='jpeg', signal_function=capture_complete, wait=False)
