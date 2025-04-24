@@ -46,14 +46,14 @@ animations = AnimationSequence(
 
 animation = AnimateOnce(pulse)
 
-# while animation.animate():
-#     pass
+while animation.animate():
+    pass
 
-glow_subset.fill((210, 33, 10))
-pixels.show()
-time.sleep(1)
-glow_subset.fill(0)
-pixels.show()
+# glow_subset.fill((210, 33, 10))
+# pixels.show()
+# time.sleep(1)
+# glow_subset.fill(0)
+# pixels.show()
 
 # try:
 #     while True:
