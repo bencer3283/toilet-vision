@@ -10,6 +10,11 @@ from adafruit_led_animation.sequence import AnimateOnce
 from adafruit_led_animation.color import TEAL
 from adafruit_raspberry_pi5_neopixel_write import neopixel_write
 
+color_init = (100, 180, 30)
+color_target = (230, 20, 17)
+color = color_init
+blocks = 0
+
 class Pi5Pixelbuf(adafruit_pixelbuf.PixelBuf):
     def __init__(self, pin, size, **kwargs):
         self._pin = pin
@@ -18,7 +23,7 @@ class Pi5Pixelbuf(adafruit_pixelbuf.PixelBuf):
     def _transmit(self, buf):
         neopixel_write(self._pin, buf)
 
-pixels = Pi5Pixelbuf(board.D18, 8, auto_write=True, byteorder="BRG", brightness=0.6)
+pixels = Pi5Pixelbuf(board.D18, 8, auto_write=True, byteorder="GRB", brightness=0.6)
 pulse = Pulse(pixels, 0.025, (210, 33, 10), period=0.4, breath=0.05, min_intensity=0.1, max_intensity=0.8) 
 animation = AnimateOnce(pulse)
 
@@ -29,13 +34,20 @@ class LEDThread(Thread):
     def run(self):
         while not quit.is_set():
             if fire.is_set():
-                for i in range(10):
-                    pixels.fill((int(21*(i+1)), int(3*(i+1)), int(1*(i+1))))
+                stops = color
+                for i in range(5):
+                    stops = tuple(int(x*0.7) for x in stops)
+                    pixels.fill(stops)
+                    pixels.show()
+                    time.sleep(0.05)
+                for i in range(5):
+                    stops = tuple(int(x*1.4) for x in stops)
+                    pixels.fill(stops)
                     pixels.show()
                     time.sleep(0.05)
                 fire.clear()
                 time.sleep(0.05)
-                pixels.fill((15, 200, 80))
+                pixels.fill(color)
                 pixels.show()
                 
 
@@ -72,7 +84,7 @@ pc.start(preview_config, show_preview=False)
 
 LED = LEDThread(args=fire)
 LED.start()
-pixels.fill((15, 200, 80))
+pixels.fill(color_init)
 pixels.show()
 
 try:
@@ -111,17 +123,19 @@ try:
                 if len(detections) > 0 and detections[0]['category'] == 'seam':
                     count_in += 1
                     print(count_in)
-                    if count_in >= 2:
+                    if count_in >= 3:
                         seam_in_frame = True
                         count_in = 0
                 else:
                     count_out += 1
-                    if count_out >= 2:
+                    if count_out >= 3:
                         seam_in_frame = False
                         count_out = 0
                 print(str(seam_in_frame)+'\n')
-                if seam_in_frame != previous_seam and not seam_in_frame :
+                if seam_in_frame != previous_seam and not seam_in_frame:
                     print('fire')
+                    blocks += 1
+                    color = (int(color_init[0]+blocks/15*(color_target[0]-color_init[0])), int(color_init[1]+blocks/15*(color_target[1]-color_init[1])), int(color_init[2]+blocks/15*(color_target[2]-color_init[2])))
                     fire.set()
                     time.sleep(0.5)
                     

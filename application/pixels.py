@@ -24,7 +24,7 @@ class Pi5Pixelbuf(adafruit_pixelbuf.PixelBuf):
     def _transmit(self, buf):
         neopixel_write(self._pin, buf)
 
-pixels = Pi5Pixelbuf(NEOPIXEL, num_pixels, auto_write=True, byteorder="BRG", brightness=0.6)
+pixels = Pi5Pixelbuf(NEOPIXEL, num_pixels, auto_write=True, byteorder="GRB", brightness=0.6)
 glow_subset = PixelSubset(pixels, 1, 7)
 
 rainbow = Rainbow(pixels, speed=0.02, period=2)
@@ -46,14 +46,14 @@ animations = AnimationSequence(
 
 animation = AnimateOnce(pulse)
 
-while animation.animate():
-    pass
+# while animation.animate():
+#     pass
 
-# glow_subset.fill((210, 33, 10))
-# pixels.show()
-# time.sleep(1)
-# glow_subset.fill(0)
-# pixels.show()
+glow_subset.fill((230, 20, 17))
+pixels.show()
+time.sleep(1)
+glow_subset.fill(0)
+pixels.show()
 
 # try:
 #     while True:
