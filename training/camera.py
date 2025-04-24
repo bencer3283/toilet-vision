@@ -56,6 +56,8 @@ still_config = pc.create_still_configuration(
     lores={'size': (1014, 760)},
     display='lores',
     controls={
+        #'FrameDurationLimits':  (),
+        'FrameRate': 15,
         'AwbEnable': True,
         'AeMeteringMode': controls.AeMeteringModeEnum.CentreWeighted, # 0 centre weighted
         'AeConstraintMode': controls.AeConstraintModeEnum.Highlight, # 1 highlight
