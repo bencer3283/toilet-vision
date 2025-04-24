@@ -104,7 +104,7 @@ try:
                         'category': labels[int(category)]
                     }
                     for box, score, category in zip(boxes, scores, classes)
-                    if score > 0.2
+                    if score > 0.0
                 ]
                 
                 print([(d['category'], d['box'][0]) for d in detections])
@@ -121,18 +121,20 @@ try:
                 
                 previous_seam = seam_in_frame
                 if len(detections) > 0 and detections[0]['category'] == 'seam':
+                    count_out = 0
                     count_in += 1
                     print(count_in)
                     if count_in >= 3:
                         seam_in_frame = True
                         count_in = 0
                 else:
+                    count_in = 0
                     count_out += 1
                     if count_out >= 3:
                         seam_in_frame = False
                         count_out = 0
                 print(str(seam_in_frame)+'\n')
-                if seam_in_frame != previous_seam and not seam_in_frame:
+                if seam_in_frame != previous_seam and seam_in_frame: # and detections[0]['box'][0] > 250:
                     print('fire')
                     blocks += 1
                     color = (int(color_init[0]+blocks/15*(color_target[0]-color_init[0])), int(color_init[1]+blocks/15*(color_target[1]-color_init[1])), int(color_init[2]+blocks/15*(color_target[2]-color_init[2])))
