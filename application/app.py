@@ -10,7 +10,9 @@ from adafruit_led_animation.sequence import AnimateOnce
 from adafruit_led_animation.color import TEAL
 from adafruit_raspberry_pi5_neopixel_write import neopixel_write
 
+# color_init = (230, 20, 17)
 color_init = (100, 180, 30)
+# color_target = (100, 180, 30)
 color_target = (230, 20, 17)
 color = color_init
 blocks = 0
@@ -77,7 +79,7 @@ preview_config = pc.create_preview_configuration(
             'Brightness': -0.7,
             'Sharpness': 1.5
             },
-        buffer_count=6
+        buffer_count=12
 )
 imx500.show_network_fw_progress_bar()
 pc.start(preview_config, show_preview=False)
