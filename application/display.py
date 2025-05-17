@@ -54,7 +54,7 @@ draw1.text(
 )
 
 # ------ADABOT JPEG DISPLAY----------
-image2 = Image.open("butt.jpg")
+image2 = Image.open("./screen-wipe/0.jpg")
 image_ratio = image2.width / image2.height
 screen_ratio = width / height
 scaled_width = width
@@ -65,7 +65,7 @@ y = scaled_height // 2 - height // 2
 image2 = image2.crop((x, y, x + width, y + height))
 
 # ------ADABOT JPEG DISPLAY----------
-image3 = Image.open("butt-2.jpg")
+image3 = Image.open("./screen-wipe/4.jpg")
 image_ratio = image3.width / image3.height
 screen_ratio = width / height
 scaled_width = width

@@ -25,9 +25,9 @@ class Pi5Pixelbuf(adafruit_pixelbuf.PixelBuf):
         neopixel_write(self._pin, buf)
 
 pixels = Pi5Pixelbuf(NEOPIXEL, num_pixels, auto_write=True, byteorder="GRB", brightness=0.6)
-glow_subset_0 = PixelSubset(pixels, 1, 8)
-glow_subset_1 = PixelSubset(pixels, 17, 24)
-lamp_subset = PixelSubset(pixels, 9, 16)
+glow_subset_0 = PixelSubset(pixels, 0, 7)
+glow_subset_1 = PixelSubset(pixels, 16, 23)
+lamp_subset = PixelSubset(pixels, 8, 15)
 
 rainbow = Rainbow(pixels, speed=0.02, period=2)
 rainbow_chase = RainbowChase(pixels, speed=0.02, size=5, spacing=3)
