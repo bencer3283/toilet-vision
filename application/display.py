@@ -54,7 +54,7 @@ draw1.text(
 )
 
 # ------ADABOT JPEG DISPLAY----------
-image2 = Image.open("blinka_round.jpg")
+image2 = Image.open("butt.jpg")
 image_ratio = image2.width / image2.height
 screen_ratio = width / height
 scaled_width = width
@@ -64,12 +64,22 @@ x = scaled_width // 2 - width // 2
 y = scaled_height // 2 - height // 2
 image2 = image2.crop((x, y, x + width, y + height))
 
+# ------ADABOT JPEG DISPLAY----------
+image3 = Image.open("butt-2.jpg")
+image_ratio = image3.width / image3.height
+screen_ratio = width / height
+scaled_width = width
+scaled_height = image3.height * width // image3.width
+image3 = image3.resize((scaled_width, scaled_height), Image.BICUBIC)
+x = scaled_width // 2 - width // 2
+y = scaled_height // 2 - height // 2
+image3 = image3.crop((x, y, x + width, y + height))
 
 try:
     while True:
-        disp.image(image1)  # show text
+        disp.image(image2)  # show text
         time.sleep(2)
-        disp.image(image2)  # show adabot
+        disp.image(image3)  # show adabot
         time.sleep(2)
 finally:
     spi.deinit()
