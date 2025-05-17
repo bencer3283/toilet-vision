@@ -25,7 +25,7 @@ class Pi5Pixelbuf(adafruit_pixelbuf.PixelBuf):
     def _transmit(self, buf):
         neopixel_write(self._pin, buf)
 
-pixels = Pi5Pixelbuf(board.D18, 8, auto_write=True, byteorder="GRB", brightness=0.6)
+pixels = Pi5Pixelbuf(board.D12, 8, auto_write=True, byteorder="GRB", brightness=0.6)
 pulse = Pulse(pixels, 0.025, (210, 33, 10), period=0.4, breath=0.05, min_intensity=0.1, max_intensity=0.8) 
 animation = AnimateOnce(pulse)
 

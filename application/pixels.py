@@ -13,7 +13,7 @@ from adafruit_led_animation.sequence import AnimationSequence, AnimateOnce
 from adafruit_led_animation.group import AnimationGroup
 from adafruit_raspberry_pi5_neopixel_write import neopixel_write
 
-NEOPIXEL = board.D18
+NEOPIXEL = board.D12
 num_pixels = 24
 
 class Pi5Pixelbuf(adafruit_pixelbuf.PixelBuf):
