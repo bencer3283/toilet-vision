@@ -13,13 +13,14 @@ from PIL import Image, ImageDraw, ImageFont
 from adafruit_rgb_display import gc9a01a
 
 # ---parameters---
-# color_init = (230, 20, 17)
-color_init = (100, 180, 30)
-# color_target = (100, 180, 30)
-color_target = (230, 20, 17)
+color_init = (230, 20, 17)
+# color_init = (100, 180, 30)
+color_target = (100, 180, 30)
+# color_target = (230, 20, 17)
 color = color_init
 blocks = 0
 avg = 21
+screen = 0
 
 # ---picamera---
 imx500 = IMX500('../imx500pkg/network.rpk')
@@ -66,39 +67,41 @@ glow_subset_1 = PixelSubset(pixels, 16, 23)
 lamp_subset = PixelSubset(pixels, 8, 15)
 
 # ---display---
-# BORDER = 20
-# FONTSIZE = 24
+BORDER = 20
+FONTSIZE = 24
 
-# cs_pin = digitalio.DigitalInOut(board.CE0)
-# dc_pin = digitalio.DigitalInOut(board.D25)
-# reset_pin = digitalio.DigitalInOut(board.D27)
+cs_pin = digitalio.DigitalInOut(board.CE0)
+dc_pin = digitalio.DigitalInOut(board.D25)
+reset_pin = digitalio.DigitalInOut(board.D27)
 
-# BAUDRATE = 24000000
-# spi = board.SPI()
+BAUDRATE = 24000000
+spi = board.SPI()
 
-# disp = gc9a01a.GC9A01A(spi, rotation=0,
-#     width=240, height=240,
-#     x_offset=0, y_offset=0,
-#     cs=cs_pin,
-#     dc=dc_pin,
-#     rst=reset_pin,
-#     baudrate=BAUDRATE,
-# )
+disp = gc9a01a.GC9A01A(spi, rotation=0,
+    width=240, height=240,
+    x_offset=0, y_offset=0,
+    cs=cs_pin,
+    dc=dc_pin,
+    rst=reset_pin,
+    baudrate=BAUDRATE,
+)
 
-# width = disp.width
-# height = disp.height
+width = disp.width
+height = disp.height
 
-# def drawJpg(path):
-#     img = Image.open(path)
-#     image_ratio = img.width / img.height
-#     screen_ratio = width / height
-#     scaled_width = width
-#     scaled_height = img.height * width // img.width
-#     img = img.resize((scaled_width, scaled_height), Image.BICUBIC)
-#     x = scaled_width // 2 - width // 2
-#     y = scaled_height // 2 - height // 2
-#     img = img.crop((x, y, x + width, y + height))
-#     return img
+def drawJpg(path):
+    pc.stop()
+    img = Image.open(path)
+    image_ratio = img.width / img.height
+    screen_ratio = width / height
+    scaled_width = width
+    scaled_height = img.height * width // img.width
+    img = img.resize((scaled_width, scaled_height), Image.BICUBIC)
+    x = scaled_width // 2 - width // 2
+    y = scaled_height // 2 - height // 2
+    img = img.crop((x, y, x + width, y + height))
+    pc.start(config=preview_config, show_preview=False)
+    return img
 
 # ---threads---
 quit = Event()
@@ -129,8 +132,8 @@ class LEDThread(Thread):
                 
 # class DisplayThread(Thread):
 #     def run(self):
+#         disp.image(drawJpg('./screen-wipe/0.jpg'))
 #         while not quit.is_set():
-#             disp.image(drawJpg('./screen-wipe/0.jpg'))
 #             if fire.is_set():
 #                 n = blocks // 7
 #                 disp.image(drawJpg('./screen-wipe/' + str(n) + '.jpg'))
@@ -171,7 +174,7 @@ try:
                     count_out = 0
                     count_in += 1
                     # print(count_in)
-                    if count_in >= 1:
+                    if count_in >= 2:
                         seam_in_frame = True
                         count_in = 0
                 else:
@@ -186,6 +189,11 @@ try:
                     blocks += 1
                     color = (int(color_init[0]+blocks/avg*(color_target[0]-color_init[0])), int(color_init[1]+blocks/avg*(color_target[1]-color_init[1])), int(color_init[2]+blocks/avg*(color_target[2]-color_init[2])))
                     fire.set()
+                    n = blocks // 7
+                    if n != screen:
+                        # drawJpg('./screen-wipe/' + str(n) + '.jpg')
+                        screen = n
+                        # print('./screen-wipe/' + str(n) + '.jpg')
                     time.sleep(0.05)
                     
 
@@ -195,7 +203,7 @@ finally:
     quit.set()
     pixels.fill(0)
     pixels.show()
-    # spi.deinit()
-    # cs_pin.deinit()
-    # dc_pin.deinit()
-    # reset_pin.deinit()
+    spi.deinit()
+    cs_pin.deinit()
+    dc_pin.deinit()
+    reset_pin.deinit()
